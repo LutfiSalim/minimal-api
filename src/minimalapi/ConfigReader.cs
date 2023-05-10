@@ -17,11 +17,11 @@ namespace minimalapi
             _jsonFile = jsonFile;
         }
 
-        public async Task<string> ReadAsync()
+        public async Task<(string, string)> ReadAsync()
         {
             var fullPath = Path.Combine(AppContext.BaseDirectory, _jsonFile);
 
-            if(!File.Exists(fullPath))
+            if (!File.Exists(fullPath))
             {
                 throw new FileNotFoundException(fullPath);
             }
@@ -29,9 +29,10 @@ namespace minimalapi
             var configString = await File.ReadAllTextAsync(fullPath);
 
             var jsonNode = JsonNode.Parse(configString);
-            var connectionString = jsonNode!["ConnectionString"]!.ToString();
+            var url = jsonNode!["url"]!.ToString();
+            var key = jsonNode!["key"]!.ToString();
 
-            return connectionString;
+            return (url, key);
         }
 
         #region IDisposble implementation
